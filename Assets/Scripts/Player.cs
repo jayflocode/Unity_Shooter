@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Numerics;
 using Unity.Mathematics;
@@ -15,6 +16,8 @@ public class Player : MonoBehaviour
     private GameObject _laserPrefab;
     [SerializeField]
     private int _lives = 3;
+    private Spawn_Manager _spawnManager;
+    
     private float _laserShotFireRate = 0.5f;  // variable represents the delay before firing
     private float _fireReady = -1f;
 
@@ -25,7 +28,13 @@ public class Player : MonoBehaviour
         //take current position = new positiong (0,0,0)
         transform.position = new Vector3(0, 0, 0);
 
+        _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<Spawn_Manager>();
 
+        if (_spawnManager == null)
+        {
+
+            Debug.Log("Spawn_1 is Null");
+        }
 
     }
 
@@ -106,8 +115,11 @@ public class Player : MonoBehaviour
 
         if (_lives < 1)
         {
+
             Debug.Log("Player Dead");
+            _spawnManager.OnPlayerDeath();
             Destroy(gameObject);
+            
         }
 
     }

@@ -12,9 +12,12 @@ public class Spawn_Manager : MonoBehaviour
     [SerializeField]
     private int _spawnLimit = 5;
     private int _spawnCounter = 0;
+    private bool _stopSpawning = false;
+
     [SerializeField]
     private GameObject _player;
-     // counts enemy repawn times
+
+    // counts enemy repawn times
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -35,10 +38,8 @@ public class Spawn_Manager : MonoBehaviour
         // while player is alive run this loop 
         // how can we know the player is alive? by examining the player's lives or by examining if player is alive
 
-        Player player = _player.GetComponent<Player>();  // create a player object that can be referenced to 
-         
         // while player is not null 
-        while (player != null)
+        while (_stopSpawning == false)
 
         {
 
@@ -59,8 +60,15 @@ public class Spawn_Manager : MonoBehaviour
                 Debug.Log("Enemies Spawned: " + _spawnCounter);
                 // yield returns adds 10 seconds to the enumator method 
                 yield return new WaitForSeconds(10);
-              
+
             }
         }
     }
+
+    public void OnPlayerDeath()
+    {
+        _stopSpawning = true;
+    }
+    
+
 }
