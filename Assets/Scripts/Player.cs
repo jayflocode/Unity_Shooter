@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Numerics;
 using Unity.Mathematics;
+using Unity.VisualScripting;
 using UnityEngine;
 using Vector3 = UnityEngine.Vector3;
 
@@ -15,11 +16,16 @@ public class Player : MonoBehaviour
     [SerializeField]
     private GameObject _laserPrefab;
     [SerializeField]
+    private GameObject _tripleShotPrefab;
+    [SerializeField]
+    private bool _tripleShotActive = false;
+    [SerializeField]
     private int _lives = 3;
     private Spawn_Manager _spawnManager;
-    
+    [SerializeField]
     private float _laserShotFireRate = 0.5f;  // variable represents the delay before firing
     private float _fireReady = -1f;
+    private float _fireOffset = 1.035f;
 
 
     void Start() //called when game starts
@@ -105,7 +111,42 @@ public class Player : MonoBehaviour
         // for example,  2 seconds will have passed by but fireready is storing 
         _fireReady = Time.time + _laserShotFireRate;
         Debug.Log("Space Key Pressed");
-        Instantiate(_laserPrefab, new Vector3(transform.position.x, transform.position.y + 0.8f, 0), quaternion.identity);
+        // Instantiates a laser with an offset in distance in respect to player
+        
+
+        switch (_tripleShotActive)
+        {
+            case false:
+            // fire normal shot
+                Instantiate(_laserPrefab, new Vector3(transform.position.x, transform.position.y + _fireOffset, 0), quaternion.identity);
+                break;
+            case true:
+            // fire triple shot
+                Instantiate(_tripleShotPrefab, new Vector3(transform.position.x, transform.position.y, 0), quaternion.identity);
+                break;
+        }
+
+    }
+    public void tripleShotSwitch(bool status)
+    {
+        _tripleShotActive = status;
+        StartCoroutine(powerUpRoutine());
+    }
+    IEnumerator powerUpRoutine()
+    {
+
+        //start the time where power up was acquired 
+        // after 10 seconds turn off power up
+        while (_tripleShotActive == true)
+        {
+            Debug.Log("Start Routine");
+            yield return new WaitForSeconds(7);
+            _tripleShotActive = false;
+             Debug.Log("End Routine");
+
+        }
+        
+
     }
     public void Damage()
     {
@@ -117,15 +158,15 @@ public class Player : MonoBehaviour
         {
 
             Debug.Log("Player Dead");
-            _spawnManager.OnPlayerDeath();
+            _spawnManager.stopSpawn();
             Destroy(gameObject);
-            
+
         }
 
     }
+    // method used to return the amount of lives of the player *not used yet* 
     public int lives()
     {
-
         return _lives;
     }
 }

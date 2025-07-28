@@ -50,9 +50,11 @@
   <ItemGroup>
     <Compile Include="Assets/Scripts/Enemy.cs" />
     <Compile Include="Assets/Scripts/Player.cs" />
+    <Compile Include="Assets/Scripts/Triple_Shot_PowerUp.cs" />
     <Compile Include="Assets/Scripts/Spawn_Manager.cs" />
     <Compile Include="Assets/TutorialInfo/Scripts/Readme.cs" />
     <Compile Include="Assets/Scripts/Laser.cs" />
+    <Compile Include="Assets/Scripts/Triple_Shot.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
