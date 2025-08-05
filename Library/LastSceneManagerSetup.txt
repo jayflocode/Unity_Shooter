@@ -1,5 +1,5 @@
 sceneSetups:
-- path: Assets/Galaxy-S.unity
+- path: Assets/Scenes/UpdatedScene.unity
   isLoaded: 1
   isActive: 1
   isSubScene: 0

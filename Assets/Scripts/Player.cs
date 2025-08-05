@@ -1,8 +1,5 @@
-using System;
 using System.Collections;
-using System.Numerics;
 using Unity.Mathematics;
-using Unity.VisualScripting;
 using UnityEngine;
 using Vector3 = UnityEngine.Vector3;
 
@@ -12,13 +9,17 @@ public class Player : MonoBehaviour
 {
     //data types (int,float,bool,string)
     [SerializeField] // allows to control from inspector
-    private float _speed = 10.0f;  // controls speed of player
+    private float _player_speed = 10.0f;  // controls speed of player
     [SerializeField]
     private GameObject _laserPrefab;
     [SerializeField]
     private GameObject _tripleShotPrefab;
     [SerializeField]
     private bool _tripleShotActive = false;
+    [SerializeField]
+    private bool _speedPowerUpActive = false;
+    [SerializeField]
+    private bool _shieldPowerActive = false;
     [SerializeField]
     private int _lives = 3;
     private Spawn_Manager _spawnManager;
@@ -78,8 +79,9 @@ public class Player : MonoBehaviour
         float vertical_input = Input.GetAxis("Vertical");
         // Time Delta is real time movement * the speed * Vector Direction
 
+
         Vector3 direction = new Vector3(horizontal_input, vertical_input, 0);
-        transform.Translate(direction * _speed * Time.deltaTime);
+        transform.Translate(direction * _player_speed * Time.deltaTime);
 
         // bound restriction 
 
@@ -94,11 +96,11 @@ public class Player : MonoBehaviour
         }
         switch (transform.position.x) // evaluates position on x axis or left/right
         {
-            case >= 11:
-                transform.position = new Vector3(-11, transform.position.y, 0); // spawns left
+            case >= 9.75f:
+                transform.position = new Vector3(-9.75f, transform.position.y, 0); // spawns left
                 break;
-            case <= -11:
-                transform.position = new Vector3(11, transform.position.y, 0);  // spawns right
+            case <= -9.75f:
+                transform.position = new Vector3(9.75f, transform.position.y, 0);  // spawns right
                 break;
         }
 
@@ -110,7 +112,7 @@ public class Player : MonoBehaviour
         // because the update method keeps running there will be an increase in time while the variable still carries a value of 1.5
         // for example,  2 seconds will have passed by but fireready is storing 
         _fireReady = Time.time + _laserShotFireRate;
-        Debug.Log("Space Key Pressed");
+       // Debug.Log("Space Key Pressed");
         // Instantiates a laser with an offset in distance in respect to player
         
 
@@ -127,27 +129,57 @@ public class Player : MonoBehaviour
         }
 
     }
+    // switch for triple shot power up, passes bool value
     public void tripleShotSwitch(bool status)
     {
         _tripleShotActive = status;
-        StartCoroutine(powerUpRoutine());
+        StartCoroutine(tripleShotpowerUpRoutine());
     }
-    IEnumerator powerUpRoutine()
+    // swithc for speed power up, passes bool value
+    public void speedPowerActive(bool status)
+    {
+        _speedPowerUpActive = status;
+        StartCoroutine(speedPowerRoutine());
+
+    }
+    // switches shield power active 
+    public void shieldPowerActive(bool status)
+    {
+        _shieldPowerActive = status;
+        StartCoroutine(shieldPowerRoutine());
+    }
+    // triple shot coroutine 
+    IEnumerator tripleShotpowerUpRoutine()
     {
 
         //start the time where power up was acquired 
         // after 10 seconds turn off power up
         while (_tripleShotActive == true)
         {
-            Debug.Log("Start Routine");
+            Debug.Log("Start Triple Shot Routine");
             yield return new WaitForSeconds(7);
             _tripleShotActive = false;
-             Debug.Log("End Routine");
-
-        }
-        
-
+             Debug.Log("End Triple Shot Routine");
+        }     
     }
+    // speed power up routine
+    IEnumerator speedPowerRoutine()
+    {
+        // creates a value to represent old speed
+        float old_speed = _player_speed;
+        _player_speed = 20;
+        yield return new WaitForSeconds(10);
+        //changes current player speed back to old speed
+        _player_speed = old_speed;
+    }
+    // work in progress 
+    IEnumerator shieldPowerRoutine()
+    {
+        yield return new WaitForSeconds(10);
+        _shieldPowerActive = false;
+    }
+
+    // when a collision is detected with player and object
     public void Damage()
     {
 
@@ -158,15 +190,13 @@ public class Player : MonoBehaviour
         {
 
             Debug.Log("Player Dead");
-            _spawnManager.stopSpawn();
+            _spawnManager.stopSpawnOnDeath();
             Destroy(gameObject);
-
         }
-
     }
     // method used to return the amount of lives of the player *not used yet* 
-    public int lives()
+    public bool shieldCheck()
     {
-        return _lives;
+        return _shieldPowerActive;
     }
 }

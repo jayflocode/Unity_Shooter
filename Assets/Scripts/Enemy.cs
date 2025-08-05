@@ -37,9 +37,17 @@ public class Enemy : MonoBehaviour
             case "Player":
                 Debug.Log("Enemy hit Player");
                 Player player = other.transform.GetComponent<Player>();
+                
                 if (player != null)
                 {
-                    player.Damage();
+                    if (player.shieldCheck() != true)
+                    {
+
+                        player.Damage();
+                        
+
+                    }
+    
                 }
                 else
                 {

@@ -424,9 +424,8 @@
 "Assets/Scripts/Enemy.cs"
 "Assets/Scripts/Laser.cs"
 "Assets/Scripts/Player.cs"
+"Assets/Scripts/PowerUp.cs"
 "Assets/Scripts/Spawn_Manager.cs"
-"Assets/Scripts/Triple_Shot.cs"
-"Assets/Scripts/Triple_Shot_PowerUp.cs"
 "Assets/TutorialInfo/Scripts/Readme.cs"
 -langversion:9.0
 /deterministic

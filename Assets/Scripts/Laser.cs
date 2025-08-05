@@ -24,7 +24,16 @@ public class Laser : MonoBehaviour
         // if laser travels "out of sight" object is then destroyed or discarded 
         if (transform.position.y > 10.5)
         {
-            Destroy(gameObject);
+            //checks to see if parent exists, if it exists the parent is destroyed
+            if (transform.parent != null)
+            {
+                Destroy(transform.parent.gameObject);
+            }
+            // destroys game object if parent doesn't exist 
+            else
+            {
+                Destroy(gameObject);
+            }
         }
     }
 }
