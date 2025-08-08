@@ -7,6 +7,9 @@ TagManager:
   - Enemy
   - Laser
   - Triple Shot
+  - Shield Power
+  - Speed Power
+  - Player Shield
   layers:
   - Default
   - TransparentFX

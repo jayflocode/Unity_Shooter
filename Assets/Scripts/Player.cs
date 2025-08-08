@@ -8,12 +8,17 @@ using Vector3 = UnityEngine.Vector3;
 public class Player : MonoBehaviour
 {
     //data types (int,float,bool,string)
+
     [SerializeField] // allows to control from inspector
     private float _player_speed = 10.0f;  // controls speed of player
     [SerializeField]
     private GameObject _laserPrefab;
     [SerializeField]
     private GameObject _tripleShotPrefab;
+    [SerializeField]
+    private GameObject _playerShield;
+    [SerializeField]
+    private int _playerScore = 0;
     [SerializeField]
     private bool _tripleShotActive = false;
     [SerializeField]
@@ -27,6 +32,7 @@ public class Player : MonoBehaviour
     private float _laserShotFireRate = 0.5f;  // variable represents the delay before firing
     private float _fireReady = -1f;
     private float _fireOffset = 1.035f;
+
 
 
     void Start() //called when game starts
@@ -68,7 +74,6 @@ public class Player : MonoBehaviour
             //Debug.Log("Fire Ready");
 
         }
-
 
     }
 
@@ -112,18 +117,18 @@ public class Player : MonoBehaviour
         // because the update method keeps running there will be an increase in time while the variable still carries a value of 1.5
         // for example,  2 seconds will have passed by but fireready is storing 
         _fireReady = Time.time + _laserShotFireRate;
-       // Debug.Log("Space Key Pressed");
+        // Debug.Log("Space Key Pressed");
         // Instantiates a laser with an offset in distance in respect to player
-        
+
 
         switch (_tripleShotActive)
         {
             case false:
-            // fire normal shot
+                // fire normal shot
                 Instantiate(_laserPrefab, new Vector3(transform.position.x, transform.position.y + _fireOffset, 0), quaternion.identity);
                 break;
             case true:
-            // fire triple shot
+                // fire triple shot
                 Instantiate(_tripleShotPrefab, new Vector3(transform.position.x, transform.position.y, 0), quaternion.identity);
                 break;
         }
@@ -159,36 +164,48 @@ public class Player : MonoBehaviour
             Debug.Log("Start Triple Shot Routine");
             yield return new WaitForSeconds(7);
             _tripleShotActive = false;
-             Debug.Log("End Triple Shot Routine");
-        }     
+            Debug.Log("End Triple Shot Routine");
+        }
     }
     // speed power up routine
     IEnumerator speedPowerRoutine()
     {
+        while (_speedPowerUpActive == true)
+        {
+
+            float old_speed = _player_speed;
+            _player_speed = 20;
+            yield return new WaitForSeconds(10);
+            //changes current player speed back to old speed
+            _player_speed = old_speed;
+            _speedPowerUpActive = false;
+
+        }
         // creates a value to represent old speed
-        float old_speed = _player_speed;
-        _player_speed = 20;
-        yield return new WaitForSeconds(10);
-        //changes current player speed back to old speed
-        _player_speed = old_speed;
     }
-    // work in progress 
+    // starts shield routine
     IEnumerator shieldPowerRoutine()
     {
-        yield return new WaitForSeconds(10);
-        _shieldPowerActive = false;
+        while (_shieldPowerActive == true)
+        {
+            //shield is off by default but turned on during routine
+            _playerShield.SetActive(true);
+            yield return new WaitForSeconds(10);
+            _playerShield.SetActive(false);
+            _shieldPowerActive = false;
+            //shield object turned off
+        }
+
     }
 
     // when a collision is detected with player and object
     public void Damage()
     {
-
         _lives = _lives - 1;
         Debug.Log("Damage Taken! Lives left: " + _lives);
 
         if (_lives < 1)
         {
-
             Debug.Log("Player Dead");
             _spawnManager.stopSpawnOnDeath();
             Destroy(gameObject);
@@ -198,5 +215,21 @@ public class Player : MonoBehaviour
     public bool shieldCheck()
     {
         return _shieldPowerActive;
+    }
+    public int checkLives()
+    {
+        return _lives;
+    }
+    // method adds 10 to the score
+    public void scoreUpdate(int score)
+    {
+        _playerScore = _playerScore + score;
+
+    }
+    // communicate with UI to update the score
+    public int updateUiScore()
+    {
+        return _playerScore;
+
     }
 }

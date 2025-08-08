@@ -426,6 +426,7 @@
 "Assets/Scripts/Player.cs"
 "Assets/Scripts/PowerUp.cs"
 "Assets/Scripts/Spawn_Manager.cs"
+"Assets/Scripts/UI_Script.cs"
 "Assets/TutorialInfo/Scripts/Readme.cs"
 -langversion:9.0
 /deterministic

@@ -5,16 +5,13 @@ using Random = UnityEngine.Random;
 
 public class Spawn_Manager : MonoBehaviour
 {
+
     [SerializeField]
     //enemy game variable used for enemy spawning and placement after spawning 
     private GameObject _enemyPreFab;
+    private Player _player;
     [SerializeField]
-    private GameObject _tripleShotPreFab;
-    [SerializeField]
-    private GameObject _speedPowerUpPreFab;
-    // container used to store all enemies 
-    [SerializeField]
-    private GameObject _shieldPowerUpPreFab;
+    private GameObject[] Power_Ups;
     [SerializeField]
     private GameObject _enemyContainer;
     [SerializeField]
@@ -24,21 +21,8 @@ public class Spawn_Manager : MonoBehaviour
     // variable assigned to evaluate whether spawning needs to take place
     [SerializeField]
     private bool _endSpawning = false;
+
     //debug
-    [SerializeField]
-    //time until triple shot starts in seconds
-    private int _r_tripleShot_Start = 5;
-    //debug
-    [SerializeField]
-    private int _r_tripleShotEnd = 25;
-    [SerializeField]
-    private int _r_speedBoostStart = 15;
-    [SerializeField]
-    private int _r_speedBoostEnd = 30;
-    [SerializeField]
-    private int _r_shieldBoostStart = 17;
-    [SerializeField]
-    private int _r_shieldBoostEnd = 35;
 
     // random x value in x plane for spawning of objects
 
@@ -48,10 +32,10 @@ public class Spawn_Manager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        _player = GameObject.Find("Player").GetComponent<Player>();
         StartCoroutine(SpawnEnemyRoutine());
-        StartCoroutine(spawnTripleShot());
-        StartCoroutine(spawnSpeedBoost());
-        StartCoroutine(spawnShieldBoost());
+        StartCoroutine(spawnPowerUps());
+        
 
     }
 
@@ -77,7 +61,7 @@ public class Spawn_Manager : MonoBehaviour
         while (_endSpawning == false)
 
         {
-            float lastPos = 0;
+
             // spawn counter counts how many times a spawn has occured and spawn limit is the value set for the limits of spawning 
             if (_spawnCounter >= _spawnLimit)
             {
@@ -90,15 +74,16 @@ public class Spawn_Manager : MonoBehaviour
                 //random x value so that enemy spawn at a random x coordinate
                 //creates game object called new Enemy that instantiates an enemy when newEnemy is called
                 float randomX = Random.Range(-9, 9);
-                randomX = randomX - lastPos;
-                Debug.Log(randomX + " and " + lastPos);
+           
                 GameObject newEnemy = Instantiate(_enemyPreFab, new Vector3(randomX, 7, 0), quaternion.identity);
                 newEnemy.transform.parent = _enemyContainer.transform; // new enemy is assigned to transform container object
+                // spawn counter increases with the instantiation of new enemies
                 _spawnCounter++;
                 Debug.Log("Enemies Spawned: " + _spawnCounter);
-                // yield returns adds 10 seconds to the enumator method 
+                // 3 second wait time in between spawned enemies
                 yield return new WaitForSeconds(3);
-                lastPos = randomX;
+                // last post remembers last area where enemy spawned so that new spawning takes place in another
+        
 
             }
         }
@@ -108,69 +93,49 @@ public class Spawn_Manager : MonoBehaviour
     public void stopSpawnOnDeath()
     {
         _endSpawning = true;
+        //destroys all enemies present on death
         Destroy(_enemyContainer);
 
     }
 
-    IEnumerator spawnTripleShot()
-    {  // spawn power up every 20 seconds 
-        // how to determine how much time has passed by
-        while (_endSpawning == false)
-        {
-
-            yield return new WaitForSeconds(Random.Range(_r_tripleShot_Start, _r_tripleShotEnd));
-
-            if (_endSpawning == true)
-            {
-                break;
-            }
-            else
-            {
-                float randomX = Random.Range(-9, 9);
-                Instantiate(_tripleShotPreFab, new Vector3(randomX, 7, 0), quaternion.identity);
-            }
-
-        }
-    }
-    IEnumerator spawnSpeedBoost()
+    IEnumerator spawnPowerUps()
     {
+        
         while (_endSpawning == false)
-        {
-            yield return new WaitForSeconds(Random.Range(_r_speedBoostStart,_r_speedBoostEnd));
 
-            if (_endSpawning == true)
+        {
+
+            
+            Debug.Log("Power Up: Player Lives " + _player.checkLives());
+
+            switch (_player.checkLives())
             {
-                Debug.Log("Triple Shot Ended");
-                break;
+                case  1:
+                    Debug.Log("Low on lives, Faster power up");
+                    yield return new WaitForSeconds(Random.Range(5, 8));
+                    break;   
+                default:
+                    Debug.Log("Normal Speed Power up");
+                    yield return new WaitForSeconds(Random.Range(8, 15));
+                    break;
+
+            }
+        
+            if (_endSpawning == false)
+            {
+                int randomPower = Random.Range(0, 3);
+                // if players lives is less than one spawn faster
+                // x coordinate values for spawn
+                float randomX = Random.Range(-9, 9);
+                // to randomize single selection of power ups
+                Instantiate(Power_Ups[randomPower], new Vector3(randomX, 7, 0), quaternion.identity);
                 
             }
-            else
-            {
-                float randomX = Random.Range(-9, 9);
-                Instantiate(_speedPowerUpPreFab, new Vector3(randomX, 7, 0), quaternion.identity);
-
-            }
-
+            
 
         }
-    }
-    IEnumerator spawnShieldBoost()
-    {
-        while (_endSpawning == false)
-        {
-            yield return new WaitForSeconds(Random.Range(_r_shieldBoostStart, _r_shieldBoostEnd));
-
-            if (_endSpawning == true)
-            {
-                break;
-            }
-            else
-            {
-                float randomX = Random.Range(-7, 9);
-                Instantiate(_shieldPowerUpPreFab, new Vector3(randomX, 7, 0), quaternion.identity);
-            }
-        }
-        
 
     }
+    
+
 }

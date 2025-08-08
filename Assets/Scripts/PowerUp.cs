@@ -36,22 +36,23 @@ public class Triple_Shot_PowerUp : MonoBehaviour
 
         if (other.tag == "Player")
         {
-            Destroy(gameObject);
+           
             Player player = other.transform.GetComponent<Player>();
 
             // evaluates the tag of the gameobject 
             switch (gameObject.tag)
             {
-                case "Speed Power":
-                    player.speedPowerActive(true);
-                    break;
                 case "Triple Shot":
                     player.tripleShotSwitch(true);
+                    break;
+                case "Speed Power":
+                    player.speedPowerActive(true);
                     break;
                 case "Shield Power":
                     player.shieldPowerActive(true);
                     break;
             }
+            Destroy(gameObject);
             Debug.Log("Collected " + gameObject.tag);
     }
 

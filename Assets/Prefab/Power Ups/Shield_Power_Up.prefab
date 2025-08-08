@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5140069353413714867}
   - component: {fileID: 2772659323358424855}
   - component: {fileID: 991180282721361415}
-  - component: {fileID: 4545375444028614693}
+  - component: {fileID: 6244217826123763213}
   m_Layer: 0
   m_Name: Shield_Power_Up
   m_TagString: Shield Power
@@ -77,8 +77,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -701119437
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: e2f5f1638e62545a09c5d6e6d3643101, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -177,7 +177,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _powerUpSpeed: 3
---- !u!95 &4545375444028614693
+--- !u!95 &6244217826123763213
 Animator:
   serializedVersion: 7
   m_ObjectHideFlags: 0
@@ -187,7 +187,7 @@ Animator:
   m_GameObject: {fileID: 4243596445306072010}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 41580459e90994512af5dde3fc1aa9ad, type: 2}
+  m_Controller: {fileID: 9100000, guid: 819331f3d0caf4a45aa5cce53b84f686, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

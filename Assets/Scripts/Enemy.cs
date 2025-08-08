@@ -6,10 +6,12 @@ using Random = UnityEngine.Random;
 public class Enemy : MonoBehaviour
 {
     [SerializeField]
-    private float _enemySpeed = 4;
+    private float _enemySpeed = 8;
+    private Player _player;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        _player = GameObject.Find("Player").GetComponent<Player>();
 
     }
 
@@ -31,36 +33,39 @@ public class Enemy : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         Debug.Log("Collision Detected with: " + other.tag);
+       
+        if (other.tag == "Player") {
 
-        switch (other.tag)
-        {
-            case "Player":
-                Debug.Log("Enemy hit Player");
-                Player player = other.transform.GetComponent<Player>();
-                
+            Player player = other.transform.GetComponent<Player>();
+
+            Debug.Log("Enemy hit Player");
+
                 if (player != null)
                 {
                     if (player.shieldCheck() != true)
                     {
-
                         player.Damage();
                         
-
                     }
-    
-                }
-                else
-                {
-                    Debug.Log("No Script Associated/Script Missing for Player");
                 }
                 Destroy(gameObject);
-                break;
-            case "Laser":
+
+        }
+
+        if (other.tag == "Laser")
+        {
                 Debug.Log("Enemy hit by laser");
                 Destroy(other.gameObject);
-                Destroy(gameObject);
-                break;
+            // before destroying enemy add points to the score, score variable is in player script class
+            if (_player != null)
+            {
+                _player.scoreUpdate(10);
+                    
+            }
+            Destroy(gameObject);
+            
         }
 
     }
+
 }
